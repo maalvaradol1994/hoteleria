@@ -3,7 +3,7 @@ const solicitarHoteles = async() => {
     let lista = document.createElement('ol');
     lista.setAttribute('class','list-group list-group-numbered');
 
-    const hoteles = await fetch('http://localhost:8000/api/hoteles')
+    const hoteles = await fetch('https://hoteleriamaalvaradol.herokuapp.com/public/api/hoteles')
     .then(resp => resp.json())
     .catch(err => console.log(err))
 
@@ -40,7 +40,7 @@ const crearHotel = async(e) => {
 
     const body = new FormData(e.target)
     
-    const response = await fetch('http://localhost:8000/api/hoteles',{
+    const response = await fetch('https://hoteleriamaalvaradol.herokuapp.com/public/api/hoteles',{
         method: 'POST',
         body: body
     })
