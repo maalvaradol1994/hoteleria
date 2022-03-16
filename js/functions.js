@@ -1,4 +1,10 @@
 const solicitarHoteles = async() => {
+    // Mostrar spiner de carga en la pagina de hoteles principal
+    response_hoteles.innerHTML = `
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    `;
 
     let lista = document.createElement('ol');
     lista.setAttribute('class','list-group list-group-numbered');
@@ -13,9 +19,14 @@ const solicitarHoteles = async() => {
             item.setAttribute('class','list-group-item d-flex justify-content-between align-items-start');
             item.innerHTML = `<div class="ms-2 me-auto">
                 <div class="fw-bold">Nit: ${hotel.hot_nit}</div>
-                    ${hotel.hot_nombre}
+                    <p>
+                    <strong>ID: </strong> ${hotel.hot_id}<br>
+                    <strong>Nombre: </strong> ${hotel.hot_nombre}<br>
+                    <strong>Ciudad: </strong> ${hotel.ciu_nombre}<br>
+                    <strong>Dirección: </strong>${hotel.hot_direccion}
+                    </p>
                 </div>
-            <span class="badge bg-primary rounded-pill">${hotel.hot_numero_habitaciones ?? 0}</span>`;
+            <span class="badge bg-primary rounded-pill">Habitaciones ${hotel.hot_numero_habitaciones ?? 0}</span>`;
 
             lista.appendChild(item);
     });
@@ -30,13 +41,14 @@ const form_done = document.getElementById("form_done");
 const crearHotel = async(e) => {
     e.preventDefault(); 
 
+    form_error.innerHTML = '';
+    form_done.innerHTML = '';  
+    $("#btn_crear_hotel").prop('disabled',true).text('Guardando Hotel, por favor espere...');
+
     // Verifica que la cantidada de habitaciones de la tabla sea igual a la cantidad de habitaciones del formulario del hotel
     if(!habitacionesAsignadasCumpleMaximo()){
         return alert('El total de habitaciones configuradas debe ser igual al número de habitaciones del hotel');
-    }
-
-    form_error.innerHTML = '';
-    form_done.innerHTML = '';   
+    } 
 
     const body = new FormData(e.target)
     
@@ -45,7 +57,10 @@ const crearHotel = async(e) => {
         body: body
     })
     .then(resp => resp.json())
-    .catch(err => err);     
+    .catch(err => err);   
+    
+    // Activa el boton de guardar de nuevo
+    $("#btn_crear_hotel").prop('disabled',false).text('Guardar Hotel');;
 
     // Si existe un ID de hotel se indica la alerta con la información delvuelta por el servidor
     if(response.hot_id){
